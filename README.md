@@ -4,7 +4,7 @@ This document outlines how to get started with a hybrid REST and gRPC service us
 
 ## Motivation
 
-While looking at migrating existing APIs from REST to gRPC, I struggled to find a working C# example, where I could run a hybrid between the two. I did not want to convert an existing service strictly to gRPC and throw away the REST implementation since many legacy services may still depend on it. Instead, I wondered if it could be possible to add the gRPC component on top of an existing REST service and expose separate ports to run HTTP/1.x and HTTP/2 connections. For a relatively simple idea, I had hoped their would-be various documentation for how this could be achieved, but after a bit of researching, I decided to create my own example.
+While looking at migrating existing APIs from REST to gRPC, I struggled to find a working C# example, where I could run a hybrid between the two. I did not want to convert an existing service strictly to gRPC and throw away the REST implementation since many legacy services may still depend on it. Instead, I wondered if it could be possible to add the gRPC component on top of an existing REST service and expose separate ports to run HTTP/1.x, HTTP/2, and HTTP/3 connections. For a relatively simple idea, I had hoped their would-be various documentation for how this could be achieved, but after a bit of researching, I decided to create my own example.
 
 ## Build and run the sample
 
@@ -33,10 +33,10 @@ You can build and run the sample in Docker using the following commands. Navigat
 
 ```pwsh
 >  docker build -t aspnetapp-k8s .
->  docker run -it --rm -p 9000:4999 -p 9001:5000 --name aspnetcore-sample aspnetapp-k8s
+>  docker run -it --rm -p 8999:4999 -p 9000:5000 -p 9001:5001 --name aspnetcore-sample aspnetapp-k8s
 ```
 
-After the application starts, navigate to http://localhost:9000 in your web browser.
+After the application starts, navigate to http://localhost:8999 in your web browser.
 
 > Note: The run command `-p` argument maps ports 9000 and 9001 on the local machine to ports 4999 and 5000 in the container (the form of the port mapping is `host:container`).
 
@@ -96,6 +96,7 @@ You'll get an output similar to this:
 ```pwsh
 http://192.168.99.100:4999
 http://192.168.99.100:5000
+https://192.168.99.100:5001
 ```
 
 Navigate to http://192.168.99.100:4999 in your web browser to test the REST component.

@@ -1,15 +1,6 @@
-﻿using System;
-using System.IO;
-using System.Reflection;
+﻿using System.Reflection;
 using aspnetapp.Services;
-using Greet.V1;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,7 +10,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddControllers();
 
-builder.Services.AddRouting(options => 
+builder.Services.AddRouting(options =>
     options.LowercaseUrls = true);
 
 //Add API versioning to application
@@ -53,7 +44,7 @@ builder.Services.AddSwaggerGen(options =>
             Url = new Uri("https://linkedin.com/in/bchen04/")
         },
         License = new OpenApiLicense
-        { 
+        {
             Name = "MIT License",
             Url = new Uri("https://github.com/bchen04/aspnetcore-grpc-rest/blob/main/LICENSE")
         }
@@ -65,7 +56,6 @@ builder.Services.AddSwaggerGen(options =>
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     options.IncludeXmlComments(xmlPath);
-
 });
 
 // Registers the service with a scoped lifetime
@@ -82,22 +72,23 @@ builder.WebHost.UseKestrel(options =>
     options.ListenAnyIP(4999, listenOptions =>
         listenOptions.Protocols = HttpProtocols.Http1);
 
+
     // Use HTTP/2
     options.ListenAnyIP(5000, listenOptions =>
         listenOptions.Protocols = HttpProtocols.Http2);
 
-    //This requires a platform that support QUIC or HTTP/3.
-    // options.ListenAnyIP(5001, listenOptions =>
-    // {
-    //     // Enables HTTP/3
-    //     listenOptions.Protocols = HttpProtocols.Http3;
-    //
-    //     // Adds a TLS certificate to the endpoint
-    //     listenOptions.UseHttps(httpsOptions =>
-    //         httpsOptions.UseLettuceEncrypt(services));
-    // });
+
+    //NOTE: This requires a platform that support QUIC or HTTP/3
+    options.ListenAnyIP(5001, listenOptions =>
+    {
+        // Because not all routers, proxies, and etc support HTTP/3,
+        // HTTP/3 should be configured together with HTTP/1.1 and HTTP/2
+        listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
+
+        // HTTP/3 requires HTTPS
+        listenOptions.UseHttps();
+    });
 });
-//.ConfigureServices(services => services.AddLettuceEncrypt());
 
 await using var app = builder.Build();
 

@@ -1,9 +1,6 @@
-﻿using System.Threading.Tasks;
-using aspnetapp.Services;
+﻿using aspnetapp.Services;
 using Greet.V1;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace aspnetapp.Controllers
 {
@@ -18,7 +15,7 @@ namespace aspnetapp.Controllers
     {
         private readonly ILogger<HelloController> _logger;
         private readonly IGreeterService _service;
-        
+
         /// <summary>
         /// Hello constructor
         /// </summary>
@@ -41,12 +38,11 @@ namespace aspnetapp.Controllers
         [HttpGet("{name}", Name = "SayHello")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(HelloReply))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> SayHello(string name)
         {
             if (string.IsNullOrEmpty(name))
                 return BadRequest();
-            
+
             // Forward the call to the greeter service
             var response = await _service.SayHello(new HelloRequest { Name = name }, null);
             return Ok(response);

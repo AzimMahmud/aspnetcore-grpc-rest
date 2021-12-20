@@ -18,7 +18,9 @@ spec:
         imagePullPolicy: Never
         ports:
           - containerPort: 4999
-            name: api-port
+            name: http-port
           - containerPort: 5000
-            name: grpc-port
+            name: http2-port
+          - containerPort: 5001
+            name: http3-port
    

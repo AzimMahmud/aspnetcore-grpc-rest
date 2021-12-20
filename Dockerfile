@@ -25,7 +25,7 @@ RUN apt update \
         gnupg2 \
         software-properties-common
 
-RUN curl -O https://packages.microsoft.com/debian/10/prod/pool/main/libm/libmsquic/libmsquic-1.5.0-amd64.deb
-RUN dpkg -i libmsquic-1.5.0-amd64.deb
+RUN curl -O https://packages.microsoft.com/debian/10/prod/pool/main/libm/libmsquic/libmsquic-1.9.0-amd64.deb
+RUN dpkg -i libmsquic-1.9.0-amd64.deb
 
 ENTRYPOINT ["dotnet", "aspnetapp.dll"]

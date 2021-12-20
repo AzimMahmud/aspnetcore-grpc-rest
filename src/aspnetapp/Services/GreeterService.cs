@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Greet.V1;
+﻿using Greet.V1;
 using Grpc.Core;
 
 namespace aspnetapp.Services
